@@ -2,14 +2,13 @@
 #include "lauxlib.h"
 #include "lualib.h"
 #include <mysql/mysql.h>
+#include <stdbool.h>
 
 /* ------------------------------------------------------------------------- */
 
-#define mysql_init_error(l, fmt, ...)                               \
-    do {                                                            \
-        lua_pushnil(l); /* empty result */                          \
-        lua_pushfstring(l, fmt, ##__VA_ARGS__); /* error message */ \
-    } while (0)
+#define mysql_init_error(l, fmt, ...)                           \
+    lua_pushnil(l); /* empty result */                          \
+    lua_pushfstring(l, fmt, ##__VA_ARGS__); /* error message */ 
 
 /* return 0 if ok */
 static int get_args(lua_State* l, const char** host, unsigned int* port,
@@ -87,8 +86,8 @@ static int get_args(lua_State* l, const char** host, unsigned int* port,
 static int l_new_mysqlclient(lua_State* l) {
     MYSQL* conn;
     unsigned int port;
-    const char *host, *user = NULL, *password = NULL, *db = NULL;
-    const char* errmsg;
+    const char *host, * errmsg;
+    const char *user = NULL, *password = NULL, *db = NULL;
 
     if (get_args(l, &host, &port, &user, &password, &db) != 0) {
         return 2;
@@ -108,8 +107,7 @@ static int l_new_mysqlclient(lua_State* l) {
         goto conn_err;
     }
 
-    lua_pushnil(l); /* errmsg */
-    return 2;
+    return 1;
 
 conn_err:
     lua_pop(l, 1); /* pop the newuserdata */
@@ -119,58 +117,66 @@ conn_err:
 
 /* ------------------------------------------------------------------------- */
 
-/* return an error message if fails, otherwise nil */
+/* return an error message if fails, otherwise true */
 static int l_mysqlclient_ping(lua_State* l) {
     MYSQL* conn = lua_touserdata(l, 1);
     if (mysql_ping(conn) == 0) {
-        lua_pushnil(l);
+        lua_pushboolean(l, true);
     } else {
+        lua_pushnil(l);
         lua_pushstring(l, mysql_error(conn));
+        return 2;
     }
     return 1;
 }
 
-/* return an error message if fails, otherwise nil */
+/* return an error message if fails, otherwise true */
 static int l_mysqlclient_selectdb(lua_State* l) {
     MYSQL* conn;
     const char* db;
 
     if (!lua_isstring(l, 2)) {
+        lua_pushnil(l);
         lua_pushfstring(l, "argument #2 expects a db name, but given a %s.",
                         lua_typename(l, lua_type(l, 2)));
-        return 1;
+        return 2;
     }
 
     conn = lua_touserdata(l, 1);
     db = lua_tostring(l, 2);
 
     if (mysql_select_db(conn, db) == 0) {
-        lua_pushnil(l);
+        lua_pushboolean(l, true);
     } else {
+        lua_pushnil(l);
         lua_pushstring(l, mysql_error(conn));
+        return 2;
     }
 
     return 1;
 }
 
-/* return an error message if fails, otherwise nil */
+/* return an error message if fails, otherwise true */
 static int l_mysqlclient_setcharset(lua_State* l) {
     MYSQL* conn;
     const char* charset;
 
     if (!lua_isstring(l, 2)) {
+        lua_pushnil(l);
         lua_pushfstring(l, "argument #2 expects a charset string, but given a %s.",
                         lua_typename(l, lua_type(l, 2)));
-        return 1;
+        return 2;
     }
 
     conn = lua_touserdata(l, 1);
     charset = lua_tostring(l, 2);
 
     if (mysql_set_character_set(conn, charset) == 0) {
-        lua_pushnil(l);
+        lua_pushboolean(l, true);
     } else {
+        lua_pushnil(l);
         lua_pushstring(l, mysql_error(conn));
+        return 2;
     }
 
     return 1;

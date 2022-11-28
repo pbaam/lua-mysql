@@ -6,30 +6,16 @@ else
     CFLAGS := -O2 -DNDEBUG
 endif
 
+LIBS := $(LIBS) -llua -lmysqlclient -lm -ldl
 CFLAGS := $(CFLAGS) -Wl,-E -Wall -Werror -fPIC
 
-LUADIR := $(HOME)/workspace/lua
-
-INCLUDE := -I$(LUADIR)/src
-LIBS := -L$(LUADIR)/src -llua -lmysqlclient -lm -ldl
-
-TARGET := luamysql luamysql.so
-
-.PHONY: all clean deps
-
-all: deps $(TARGET)
+.PHONY: all clean
+all: luamysql.so
 
 luamysql: luamysql.o host.o
-	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-
+	$(CC) $(LIBS) -o $@ $^
 luamysql.so: luamysql.o
-	$(CC) $(CFLAGS) $^ -shared -o $@ $(LIBS)
-
-deps:
-	$(MAKE) posix MYCFLAGS="-fPIC -DLUA_USE_DLOPEN -Wl,-E" MYLIBS="-ldl" -C $(LUADIR)
-
-.c.o:
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+	$(CC) -shared $(LIBS) -o $@ $<
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -f *.o *.so luamysql

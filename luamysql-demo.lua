@@ -1,63 +1,28 @@
-local mysql = require('luamysql')
+#!/usr/bin/env lua
 
-dbarg = {
-    host = "127.0.0.1", -- required
-    port = 3306, -- required
-    user = "ouonline", -- optional
-    password = "ouonline", -- optional
-    db = "test", -- optional
+local mysql = require "luamysql"
+
+local dbarg = {
+	host = "127.0.0.1",
+	port = 3306,
+	user = "usuario"
 }
 
--------------------------------------------------------------------------------
+client = assert(mysql.newclient(dbarg))
+assert(client:selectdb("prueba"))
+assert(client:setcharset("utf8"))
+assert(client:ping())
 
-client, errmsg = mysql.newclient(dbarg)
-if errmsg ~= nil then
-    io.write("connect to mysql error: ", errmsg, "\n")
-    return
-end
+result = assert(client:escape("'ouonline'"))
+io.write("escape string -> ", result, "\n")
 
-errmsg = client:selectdb(dbarg.db)
-if errmsg ~= nil then
-    io.write("selectdb error: ", errmsg, "\n")
-    return
-end
+result = assert(client:execute("select * from categorias"))
 
-errmsg = client:setcharset("utf8")
-if errmsg ~= nil then
-    io.write("setcharset error: ", errmsg, "\n")
-    return
-end
-
-errmsg = client:ping()
-if errmsg ~= nil then
-    io.write("ping: ", errmsg, "\n")
-    return
-end
-
-result, errmsg = client:escape("'ouonline'")
-if errmsg ~= nil then
-    io.write("escape error: ", errmsg, "\n")
-    return
-end
-io.write("excape string -> ", result, "\n")
-
-result, errmsg = client:execute("select * from test")
-if errmsg ~= nil then
-    io.write("execute error: ", errmsg, "\n")
-    return
-end
-
-io.write("result size = ", result:size(), "\n")
-
-fieldnamelist = result:fieldnamelist()
-if fieldnamelist == nil then
-    io.write("get fieldnamelist error.\n")
-    return
-end
+fieldnamelist = assert(result:fieldnamelist())
 
 for record in result:recordlist() do
-    io.write("--------------------------------\n")
-    for k, v in pairs(record) do
-        io.write("[", k, "] -> ", fieldnamelist[k], ": ", v, "\n")
-    end
+	io.write("---\n")
+	for k, v in pairs(record) do
+		io.write("[", k, "] -> ", fieldnamelist[k], ": ", v, "\n")
+	end
 end
