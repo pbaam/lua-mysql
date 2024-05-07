@@ -1,3 +1,5 @@
 *.so
 *.o
 luamysql
+zig-cache
+zig-out

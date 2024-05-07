@@ -1,0 +1,17 @@
+.{
+    .name = "lua-mysql",
+    .version = "0.1.0",
+    .dependencies = .{
+        .lua = .{
+            .url = "https://github.com/natecraddock/ziglua/archive/486f51d3acc61d805783f5f07aee34c75ab59a25.tar.gz",
+            .hash = "12208603e0f51fa6ce7201d8e851c5979b6b78887434623ac87a0f2a5a3dd3e75130",
+        },
+        .lua54 = .{
+            .url = "https://www.lua.org/ftp/lua-5.4.6.tar.gz",
+            .hash = "1220f93ada1fa077ab096bf88a5b159ad421dbf6a478edec78ddb186d0c21d3476d9",
+        },
+    },
+    .paths = .{
+        "",
+    },
+}

@@ -374,7 +374,7 @@ static void create_mysqlclient_funcs(lua_State* l) {
     lua_setfield(l, -2, "__gc");
 }
 
-int luaopen_luamysql(lua_State* l) {
+int luaopen_mysql(lua_State* l) {
     lua_createtable(l, 0, 1);
     create_mysqlclient_funcs(l);
     lua_pushcclosure(l, l_new_mysqlclient, 1);
