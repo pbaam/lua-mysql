@@ -1,4 +1,5 @@
 #!/usr/bin/env lua
+-- LUA_CPATH='zig-out/lib/?.so' lua test/simple_test.lua
 
 local sql = require "mysql"
 

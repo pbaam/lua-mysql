@@ -3,12 +3,16 @@
     .version = "0.1.0",
     .dependencies = .{
         .lua = .{
-            .url = "https://github.com/natecraddock/ziglua/archive/486f51d3acc61d805783f5f07aee34c75ab59a25.tar.gz",
-            .hash = "12208603e0f51fa6ce7201d8e851c5979b6b78887434623ac87a0f2a5a3dd3e75130",
+            .url = "https://github.com/natecraddock/ziglua/archive/d853aa9450ae568a39ea02d7082e85bafc33f735.tar.gz",
+            .hash = "1220affeb3fe37ef09411b5a213b5fdf9bb6568e9913bade204694648983a8b2776d",
         },
         .lua54 = .{
             .url = "https://www.lua.org/ftp/lua-5.4.6.tar.gz",
             .hash = "1220f93ada1fa077ab096bf88a5b159ad421dbf6a478edec78ddb186d0c21d3476d9",
+        },
+        .mariadb = .{
+            .url = "https://github.com/mariadb-corporation/mariadb-connector-c/archive/f97bb2e92ed593ff94e2ba018918823efba35e0d.tar.gz",
+            .hash = "1220aebc19de0ca05f617b983aeaba496a65d16ef8ec932b18a7014d7be1c7312a98",
         },
     },
     .paths = .{

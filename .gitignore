@@ -1,5 +1,2 @@
-*.so
-*.o
-luamysql
-zig-cache
+.zig-cache
 zig-out
